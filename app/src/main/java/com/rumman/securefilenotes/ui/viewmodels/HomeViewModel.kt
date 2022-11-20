@@ -26,6 +26,9 @@ class HomeViewModel @Inject constructor(
     private val _fileObserver = MutableLiveData<Resources<List<FileModel>>>()
         val fileObserver get() = _fileObserver
 
+    /**
+     * The below function calls file helper save file method
+     */
     fun addNotes(title : String,notes : String){
         _notesObserver.postValue(Resources.Loading)
         viewModelScope.launch {
@@ -39,6 +42,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * The below function will fetch all files
+     */
     fun getFiles(){
         _fileObserver.postValue(Resources.Loading)
         viewModelScope.launch {

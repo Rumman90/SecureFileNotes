@@ -69,6 +69,9 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * This dialog is called if the permission is already denied by user
+     */
     private fun showRationaleDialog(title: String, desc: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(title)
