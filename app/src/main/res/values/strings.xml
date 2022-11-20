@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Secure File Notes</string>
+    <string name="password_hint">Enter Password</string>
+    <string name="authenticate">Authenticate</string>
+    <string name="password_field_empty">Please Enter Password</string>
+    <string name="password_not_match">Please Enter Correct Password</string>
+    <string name="title_hint">Enter Title</string>
+    <string name="notes_hint">Enter Notes</string>
+    <string name="search_notes">Search Notes</string>
+</resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="fileModel"
+            type="com.rumman.securefilenotes.data.models.FileModel" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true">
+
+     <androidx.constraintlayout.widget.ConstraintLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
+
+         <androidx.appcompat.widget.AppCompatTextView
+             android:id="@+id/title"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_margin="@dimen/_5sdp"
+             android:padding="@dimen/_5sdp"
+             android:textStyle="bold"
+             app:layout_constraintTop_toTopOf="parent"
+             app:layout_constraintLeft_toLeftOf="parent"
+             android:textSize="18sp"
+             tools:text="Title"
+             android:text="@{fileModel.title}"/>
+
+         <androidx.appcompat.widget.AppCompatTextView
+             android:id="@+id/note"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_margin="@dimen/_5sdp"
+             android:padding="@dimen/_5sdp"
+             android:textColor="@color/black"
+             app:layout_constraintTop_toBottomOf="@+id/title"
+             app:layout_constraintLeft_toLeftOf="parent"
+             android:textSize="15sp"
+             tools:text="Note"
+             android:text="@{fileModel.notes}"/>
+
+     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+</layout>
