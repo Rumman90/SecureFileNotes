@@ -7,11 +7,16 @@ import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.rumman.securefilenotes.BuildConfig
 import com.rumman.securefilenotes.data.models.FileModel
+import java.security.InvalidAlgorithmParameterException
+import java.security.InvalidKeyException
 import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.security.spec.InvalidKeySpecException
 import java.text.SimpleDateFormat
 import java.util.Date
-import javax.crypto.Cipher
+import javax.crypto.*
 import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
 /**
@@ -44,53 +49,37 @@ fun ViewModel.convertJsonToModelString(data : String?) : FileModel {
 }
 
 /**
- * This extension function generate key according to user login password
- */
-fun ViewModel.generateKey() : SecretKeySpec {
-    val digest = MessageDigest.getInstance("SHA-256")
-    val bytes = BuildConfig.User_Password.toByteArray()
-    digest.update(bytes,0,bytes.size)
-    val key = digest.digest()
-    return SecretKeySpec(key,0,16,"AES")
-}
-
-/**
  * This extension function is used to encrypt the content
  */
-fun ViewModel.encrypt(content : String) : ByteArray {
-    val plainText = content.toByteArray(Charsets.UTF_8)
-    val key = generateKey()
-    val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
-    cipher.init(Cipher.ENCRYPT_MODE, key)
-    return cipher.doFinal(plainText)
+@Throws(
+    NoSuchPaddingException::class,NoSuchAlgorithmException::class,
+    InvalidAlgorithmParameterException::class,
+    InvalidKeyException::class,
+    BadPaddingException::class,
+    IllegalBlockSizeException::class)
+fun ViewModel.encrypt(content : String, password : String, salt : String) : String {
+    val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+    cipher.init(Cipher.ENCRYPT_MODE, getKeyFromPassword(password,salt),IvParameterSpec(byteArrayOf(1,3,5,7,9,11,13,15,21,25,41,55,68,73,80,95)))
+    val cipherText = cipher.doFinal(content.toByteArray())
+    return android.util.Base64.encodeToString(cipherText,android.util.Base64.DEFAULT)
 }
 
 /**
  * This extension function is used to decrypt the content
  */
-fun ViewModel.decrypt(content : ByteArray) : String {
-    val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
-    val key = generateKey()
-    cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(getEncryptedCipherIvValue(key)))
-    val cipherText = cipher.doFinal(content)
-    return buildString(cipherText)
+@Throws(NoSuchPaddingException::class,NoSuchAlgorithmException::class,InvalidAlgorithmParameterException::class,InvalidKeyException::class,BadPaddingException::class,IllegalBlockSizeException::class)
+fun ViewModel.decrypt(content : String,password : String,salt : String) : String {
+    val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+    cipher.init(Cipher.DECRYPT_MODE, getKeyFromPassword(password,salt),IvParameterSpec(byteArrayOf(1,3,5,7,9,11,13,15,21,25,41,55,68,73,80,95)))
+    val plainText = cipher.doFinal(android.util.Base64.decode(content,android.util.Base64.DEFAULT))
+    return String(plainText)
 }
 
-/**
- * This function returns the encrypted cipher iv value for decryption
- */
-private fun getEncryptedCipherIvValue(key : SecretKeySpec) : ByteArray{
-    val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
-    cipher.init(Cipher.ENCRYPT_MODE,key)
-    return cipher.iv
-}
-
-private fun buildString(text: ByteArray): String{
-    val sb = StringBuilder()
-    for (char in text) {
-        sb.append(char.toInt().toChar())
-    }
-    return sb.toString()
+@Throws(NoSuchAlgorithmException::class, InvalidKeySpecException::class)
+private fun getKeyFromPassword(password: String,salt: String) : SecretKey {
+    val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+    val spec = PBEKeySpec(password.toCharArray(),salt.toByteArray(),65536,256)
+    return SecretKeySpec(factory.generateSecret(spec).encoded,"AES")
 }
 
 

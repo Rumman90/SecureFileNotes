@@ -52,7 +52,8 @@ class AddFragment : Fragment(),PermissionListener {
             when(it){
                 is Resources.Success -> {
                     (requireActivity() as HomeActivity).hideProgressBar()
-                    findNavController().popBackStack()
+                     homeViewModel.clearNotesObserver()
+                     findNavController().popBackStack()
                 }
                 is Resources.Error -> {
                     (requireActivity() as HomeActivity).hideProgressBar()

@@ -40,7 +40,7 @@ class FileHelperImpl @Inject constructor(
 
     }
 
-    override suspend fun saveFile(fileName : String,fileContent : ByteArray) : Boolean{
+    override suspend fun saveFile(fileName : String,fileContent : String) : Boolean{
         try {
             val path = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
                 "${context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/${BuildConfig.User_Password}"
@@ -54,7 +54,7 @@ class FileHelperImpl @Inject constructor(
                 outputFile.delete()
             }
             fileOutputStream = FileOutputStream(outputFile)
-            fileOutputStream!!.write(fileContent)
+            fileOutputStream!!.write(fileContent.toByteArray())
             outputStream = BufferedOutputStream(
                 fileOutputStream
             )

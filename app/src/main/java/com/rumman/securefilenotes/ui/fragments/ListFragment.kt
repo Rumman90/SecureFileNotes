@@ -44,6 +44,7 @@ class ListFragment : Fragment(),PermissionListener,SearchView.OnQueryTextListene
         binding.searchNotes.setOnQueryTextListener(this)
         binding.addFB.setOnClickListener {
             binding.searchNotes.setQuery("",true)
+            homeViewModel.clearFileObserver()
             findNavController().navigate(R.id.action_listFragment_to_addFragment)
         }
 

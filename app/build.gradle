@@ -28,9 +28,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String","User_Password",user_password
+            buildConfigField "String","User_Salt",salt
         }
         debug{
             buildConfigField "String","User_Password",user_password
+            buildConfigField "String","User_Salt",salt
         }
     }
     compileOptions {
