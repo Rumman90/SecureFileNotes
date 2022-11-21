@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rumman.securefilenotes.data.files.FilesHelper
 import com.rumman.securefilenotes.data.models.FileModel
-import com.rumman.securefilenotes.utils.Resources
-import com.rumman.securefilenotes.utils.convertJsonToModelString
-import com.rumman.securefilenotes.utils.convertModelToJsonString
+import com.rumman.securefilenotes.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.LinkedList
@@ -32,7 +30,7 @@ class HomeViewModel @Inject constructor(
     fun addNotes(title : String,notes : String){
         _notesObserver.postValue(Resources.Loading)
         viewModelScope.launch {
-            val isRecordSaved = filesHelper.saveFile(convertModelToJsonString(FileModel(title,notes)))
+            val isRecordSaved = filesHelper.saveFile(getCurrentDate()+".txt",encrypt(convertModelToJsonString(FileModel(title,notes))))
             if(isRecordSaved){
                 _notesObserver.postValue(Resources.Success("Success"))
             }else{
@@ -52,7 +50,8 @@ class HomeViewModel @Inject constructor(
             if(allRecords.isNotEmpty()){
                 _notesList.clear()
                 allRecords.forEach {
-                    _notesList.add(convertJsonToModelString(it))
+                    _notesList.add(convertJsonToModelString(it?.toByteArray()
+                        ?.let { it1 -> decrypt(it1) }))
                 }
                 _fileObserver.postValue(Resources.Success(_notesList))
             }else{

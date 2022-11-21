@@ -8,6 +8,7 @@ import com.rumman.securefilenotes.BuildConfig
 import com.rumman.securefilenotes.R
 import com.rumman.securefilenotes.databinding.ActivityMainBinding
 import com.rumman.securefilenotes.utils.showToast
+import javax.crypto.KeyGenerator
 
 
 class MainActivity : AppCompatActivity() {

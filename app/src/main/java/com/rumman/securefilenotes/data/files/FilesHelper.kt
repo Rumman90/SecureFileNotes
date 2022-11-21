@@ -6,5 +6,5 @@ import java.util.LinkedList
 interface FilesHelper {
 
     suspend fun getAllFiles() : Array<String?>
-    suspend fun saveFile(fileContent : String) : Boolean
+    suspend fun saveFile(fileName : String,fileContent : ByteArray) : Boolean
 }
